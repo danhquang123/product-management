@@ -8,4 +8,6 @@ router.get('/add', controller.add)
 router.get('/edit', controller.edit)
 router.get('/delete', controller.delete)
 
+router.get('/detail/:slug', controller.detail)
+
 module.exports = router

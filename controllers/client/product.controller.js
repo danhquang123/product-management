@@ -34,3 +34,25 @@ module.exports.delete = (req, res) => {
     res.send("xoá ")
 }
 
+
+module.exports.detail = async(req, res) => {
+
+    try {
+        const slug= req.params.slug;
+       
+
+        const product = await Product.findOne({
+            slug: slug,
+            deleted: false,
+            status: "active"
+        });
+        
+        
+        res.render('client/pages/products/detail.pug',{
+            pageTitle : "trang chi tiết sản phẩm",
+            product : product,
+        })
+    } catch (error) {
+        res.redirect("/");
+    }
+}

@@ -23,12 +23,15 @@ block main
     .card.mb-3 
         .card-header Danh sách
         .card-body
+            .row 
+                .col-8
 
-            +doi-trangThai-many(`/${prefixAdmin}/products/change-multi?_method=PATCH`)
-
-
-
-
+                    +doi-trangThai-many(`/${prefixAdmin}/products/change-multi?_method=PATCH`)
+                .col-4 
+                    a(
+                        href=`/${prefixAdmin}/products/create`
+                        class="btn btn-outline-success"
+                    ) + Thêm Mới
 
 
             table(
@@ -92,7 +95,17 @@ block main
                                         data-status=item.status
                                     ) Dừng hoạt động
                             td
-                                button(class="btn btn-warning btn-sm") Sửa
+                                a(
+                                    href=`/${prefixAdmin}/products/detail/${item.id}`
+                                    class="btn btn-secondary btn-sm"
+                                    
+                                    ) Chi tiết 
+
+                                a(
+                                    href=`/${prefixAdmin}/products/edit/${item.id}`
+                                    class="btn btn-warning btn-sm"
+                                    
+                                    ) Sửa
                                 button(class="btn btn-danger btn-sm ml-1"
                                        button-delete 
                                        data-id=item.id 

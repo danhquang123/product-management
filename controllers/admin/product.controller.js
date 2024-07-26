@@ -3,6 +3,10 @@ const buttonStatusHelpers = require("../../helpers/buttonStatus")
 const searchHelpers = require("../../helpers/search")
 const phanTrangHelpers =require("../../helpers/phanTrang")
 const product = require("../../models/product.model")
+
+
+
+
 module.exports.index = async(req, res) => {
     // tạo ojec chứa 3 nút button
     const buttonStatus=buttonStatusHelpers(req.query);
@@ -91,7 +95,7 @@ module.exports.changeMulti = async(req, res) => {
                 deleted :"true",
                 deletedAt: new Date()
             })
-            req.flash('info', `Cập nhật trạng thái thành công cho ${ids.length} sản phẩm!`);
+            req.flash('info', `Xoá trạng thái thành công cho ${ids.length} sản phẩm!`);
             break
         case "change-position":
             for (const item of ids) {
@@ -100,7 +104,7 @@ module.exports.changeMulti = async(req, res) => {
                 await Product.updateOne({_id: id},{ position: position})
                 
             }
-            req.flash('info', `Xoá  thành công cho ${ids.length} sản phẩm!`);
+            req.flash('info', `Thay đổi thành công cho ${ids.length} sản phẩm!`);
                
             
             break;
@@ -127,3 +131,103 @@ module.exports.delete = async(req, res) => {
     res.redirect("back");
 }
 // xoá sản phẩm
+
+
+// thêm sản phẩm
+
+module.exports.create = async(req, res) => {
+    res.render("admin/pages/products/create",{
+        pageTitle : "danh sach tao moi san pham ",
+        
+    })
+    console.log(req.body);
+        
+    // res.redirect("back");
+}
+
+module.exports.createNew = async(req, res) => {
+    
+    
+    req.body.price=parseInt(req.body.price);
+    req.body.discountPercentage=parseInt(req.body.discountPercentage);
+    req.body.stock=parseInt(req.body.stock);
+    if(req.body.position ===""){
+        const count = await Product.countDocuments();
+        req.body.position = count +1;
+    }
+    else{
+        req.body.position=parseInt(req.body.position);
+    }
+    // res.redirect("back");
+    console.log(req.body);
+
+    if(req.file && req.file.filename){
+        req.body.thumbnail=`/uploads/${req.file.filename}`
+    }
+
+    const product = new Product(req.body)
+    await product.save();
+   
+    res.redirect(`/admin/products`)
+}
+// thêm sản phẩm
+
+
+// sửa thông tin sản phẩm
+
+module.exports.edit = async(req, res) => {
+    const id= req.params.id;
+
+    const thongtin = await Product.findOne({_id: id,deleted: false});
+        
+    res.render("admin/pages/products/edit",{
+        pageTitle : "trang sửa thông tin sản phẩm ",
+        product : thongtin,
+        
+    })
+     
+}
+
+
+module.exports.editNew = async(req, res) => {
+    const id= req.params.id;
+    
+    req.body.price=parseInt(req.body.price);
+    req.body.discountPercentage=parseInt(req.body.discountPercentage);
+    req.body.stock=parseInt(req.body.stock);
+   
+    req.body.position=parseInt(req.body.position);
+    
+    
+
+    if(req.file && req.file.filename){
+        req.body.thumbnail=`/uploads/${req.file.filename}`
+    }
+
+    await Product.updateOne({_id : id},req.body)
+
+    req.flash('info', 'Cập nhập Thành Công');
+   
+    res.redirect("/admin/products")
+}
+
+// sửa thông tin sản phẩm
+
+// chi tiết sản phẩm
+
+module.exports.detail = async(req, res) => {
+    const id= req.params.id;
+
+    const thongtin = await Product.findOne({_id: id,deleted: false});
+        
+    res.render("admin/pages/products/detail",{
+        pageTitle : "trang chi tiết thông tin sản phẩm ",
+        product : thongtin,
+        
+    })
+    
+        
+
+}
+
+// chi tiết sản phẩm
